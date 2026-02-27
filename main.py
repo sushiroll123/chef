@@ -32,7 +32,7 @@ PASSWORDS = {
     "internal": INTERNAL_PASS,
     "finance": FINANCE_PASS,
     "marketing": MARKETING_PASS,
-    "parternship": PARTNERSHIP_PASS,
+    "partnership": PARTNERSHIP_PASS,
     "director": DIRECTOR_PASS
 }
 
@@ -49,9 +49,9 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
-    elif isinstance(error, commands.MissingRequiredRole):
+    elif isinstance(error, MissingRequiredRole):
         await ctx.send("You don't have perms lil bro")
-    elif isinstance(error, commands.NotInSetupChannel):
+    elif isinstance(error, NotInSetupChannel):
         await ctx.send("Command can only be called in setup channel")
 
 # messages
@@ -71,7 +71,7 @@ async def on_message(message):
 
 # display list of exec roles
 @bot.command()
-@has_exec_roles(EXEC_ROLES)
+@has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
 async def roles(ctx):
     rolls_list = EXEC_ROLES
@@ -85,7 +85,7 @@ async def purge(ctx):
 
 # dm user setup steps
 @bot.command()
-@has_exec_roles(EXEC_ROLES)
+@has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
 async def setup(ctx):
     await ctx.author.send(SETUP_INSTRUCTIONS)
@@ -101,7 +101,7 @@ async def poll(ctx, *, question):
 
 # removing role
 @bot.command()
-@has_exec_roles(EXEC_ROLES)
+@has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
 async def leave(ctx, *, role_name):
     start_msg = ctx.message
@@ -132,7 +132,7 @@ async def leave(ctx, *, role_name):
 
 # assigning role
 @bot.command()
-@has_exec_roles(EXEC_ROLES)
+@has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
 async def join(ctx):
     start_msg = ctx.message
