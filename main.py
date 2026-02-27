@@ -134,22 +134,10 @@ async def leave(ctx, *, role_name):
 @bot.command()
 @has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
-async def join(ctx):
+async def join(ctx, *, role_name):
     start_msg = ctx.message
-    await ctx.channel.send("Which role do you want to join?")
-
-    def check(msg):
-        return msg.channel == ctx.channel and msg.author == ctx.author
     
-    role_name_msg = await user_input(ctx, check, 60.0, start_msg)
-    if role_name_msg is None:
-        return
-    role_name = role_name_msg.content
-    
-    role = discord.utils.find(
-        lambda r: r.name.lower() == role_name.lower() and role_name.lower() in EXEC_ROLES, 
-        ctx.guild.roles
-        )
+    role = discord.utils.find(lambda r: r.name.lower() == role_name.lower(), ctx.guild.roles)
     
     if role in ctx.author.roles:
         last_msg = await ctx.channel.send("You already have that role greedyass")
@@ -158,8 +146,12 @@ async def join(ctx):
         return
     
     if role:
-        await ctx.channel.send("please enter password for role:")            
+        await ctx.channel.send("please enter password for role:")     
 
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel       
+
+        # number of attempts
         attempts = 3
         last_msg = await verify_password(ctx, check, attempts, role_name, role, 60.0, start_msg)
         if last_msg is None:
