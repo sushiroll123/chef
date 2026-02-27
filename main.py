@@ -48,10 +48,12 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingAnyRole):
-        await ctx.send("You don't have perms lil bro")
-    elif isinstance(error, commands.CommandNotFound):
+    if isinstance(error, commands.CommandNotFound):
         return
+    elif isinstance(error, commands.MissingRequiredRole):
+        await ctx.send("You don't have perms lil bro")
+    elif isinstance(error, commands.NotInSetupChannel):
+        await ctx.send("Command can only be called in setup channel")
 
 # messages
 @bot.event
