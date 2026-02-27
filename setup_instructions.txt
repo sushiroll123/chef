@@ -1,0 +1,12 @@
+1. Message !join in the setup channel
+2. Message the team which you want to join (list of possible positions availible through !roles)
+3. Message the password for the team (passwords should be in Slack, if not, ask a director)
+4. All done! :D
+
+All exec positions:
+- director
+- cooking
+- marketing
+- partnership
+- internal
+- finance
