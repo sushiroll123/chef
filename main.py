@@ -5,7 +5,6 @@ from checks import *
 from exceptions import *
 from dotenv import load_dotenv
 import os
-import webserver
 
 load_dotenv()
 DISCORDKEY = os.getenv('DISCORD_TOKEN')
@@ -221,5 +220,4 @@ async def verify_password(ctx, check, attempts, role_name, role, time_limit, sta
                     else:
                         return await ctx.channel.send("Too many incorrect attemps bro, action cancelled")
 
-webserver.keep_alive()
 bot.run(DISCORDKEY, log_handler=handler, log_level=logging.DEBUG)
