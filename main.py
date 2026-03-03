@@ -4,6 +4,7 @@ import logging
 from checks import *
 from exceptions import *
 from dotenv import load_dotenv
+import asyncio
 import os
 
 load_dotenv()
@@ -36,8 +37,13 @@ PASSWORDS = {
     "director": DIRECTOR_PASS
 }
 
-with open('setup_instructions.txt', 'r') as f:
-    SETUP_INSTRUCTIONS = f.read()
+try:
+    with open('setup_instructions.txt', 'r') as f:
+        SETUP_INSTRUCTIONS = f.read()
+except FileNotFoundError: 
+    print("setup_instructions.txt not found, using fallback")
+    SETUP_INSTRUCTIONS = "Setup instructions not available, contact an admin"
+
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -91,7 +97,10 @@ async def purge(ctx):
 @has_exec_roles(ROLES_WITH_PERMS)
 @in_setup_channel(SETUP_CHANNEL_ID)
 async def setup(ctx):
-    await ctx.author.send(SETUP_INSTRUCTIONS)
+    try:
+        await ctx.author.send(SETUP_INSTRUCTIONS)
+    except discord.Forbidden:
+        await ctx.channel.send("you might have DMs disabled :(")
 
 # quick yes/no poll
 @bot.command()
@@ -180,12 +189,12 @@ async def user_input(ctx, check, timeout, start_msg=None):
     try:
         msg = await bot.wait_for('message', check=check, timeout=timeout)
         return msg
-    except TimeoutError:
+    except asyncio.TimeoutError:
         last_msg = await ctx.channel.send("Took too long buddy...")
         if start_msg:
             await ctx.channel.purge(limit=100, after=start_msg, before=last_msg)
             await start_msg.delete()
-        return
+        return None
     
 # helper for verify_password, checks passwords
 def check_password(role_name, pswd):
