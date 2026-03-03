@@ -62,6 +62,8 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"Missing argument: `{error.param.name}`")
     elif isinstance(error, MissingRequiredRole):
         await ctx.send("You don't have perms lil bro")
     elif isinstance(error, NotInSetupChannel):
