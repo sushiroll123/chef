@@ -17,6 +17,12 @@ PARTNERSHIP_PASS = os.getenv('PARTNERSHIP_PASS')
 DIRECTOR_PASS = os.getenv('DIRECTOR_PASS')
 
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+logging.basicConfig(
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[handler]
+)
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -62,6 +68,8 @@ async def on_command_error(ctx, error):
         await ctx.send("Command can only be called in setup channel")
     else:
         await ctx.send("sorry, something went wrong :(")
+        logging.error(f"Command: {ctx.command} | User: {ctx.author} | Error: {error}", exc_info=True)
+
 
 # messages
 @bot.event
