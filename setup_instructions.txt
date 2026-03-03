@@ -1,5 +1,6 @@
 1. Message !join <team> in the setup channel (replace <team> with name of team you want to join, list of possible teams availible through !roles)
 2. Message the password for the team (passwords should be in Slack, if not, ask a director)
+3. Message !rename <name- position> to change your name
 3. All done! :D
 
 All exec positions:

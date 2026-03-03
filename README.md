@@ -7,7 +7,8 @@ Created by me for the UBC Cooking Club Discord, if you have any issues find some
 - !purge: Deletes (up to) 100 last messages.
 - !setup: Dms author instructions for exec setup.
 - !poll *topic*: Quick yes/no reaction poll.
+- !rename (name): To change your nickname to (name).
 - !leave (position): To remove role.
-- !join (position): Exec onboarding roles.
+- !join (position): To begin exec onboarding process.
 
 *note that most roles above can only be used by temp-execs and up, with some only availible to Admins and Directors.*

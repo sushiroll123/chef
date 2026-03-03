@@ -45,6 +45,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 async def on_ready():
     print(f"{bot.user.name} is ready to cook!")
 
+# catch errors
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -53,6 +54,8 @@ async def on_command_error(ctx, error):
         await ctx.send("You don't have perms lil bro")
     elif isinstance(error, NotInSetupChannel):
         await ctx.send("Command can only be called in setup channel")
+    else:
+        await ctx.send("sorry, something went wrong :(")
 
 # messages
 @bot.event
@@ -98,6 +101,14 @@ async def poll(ctx, *, question):
     poll_msg = await ctx.send(embed=embed)
     await poll_msg.add_reaction("👍")
     await poll_msg.add_reaction("👎")
+
+# changes nickname
+@bot.command()
+@has_exec_roles(ROLES_WITH_PERMS)
+@in_setup_channel(SETUP_CHANNEL_ID)
+async def rename(ctx, *, nickname):
+    await ctx.author.edit(nick=nickname)
+    await ctx.channel.send(f"{ctx.author.mention} has changed their name")
 
 # removing role
 @bot.command()
