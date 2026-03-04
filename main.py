@@ -8,7 +8,7 @@ import asyncio
 import os
 
 load_dotenv()
-DISCORDKEY = os.getenv('DISCORD_TOKEN')
+DISCORDKEY = os.getenv('CHEF_DISCORD_TOKEN')
 COOKING_PASS = os.getenv('COOKING_PASS')
 INTERNAL_PASS = os.getenv('INTERNAL_PASS')
 FINANCE_PASS = os.getenv('FINANCE_PASS')
