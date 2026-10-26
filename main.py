@@ -6,6 +6,7 @@ from exceptions import *
 from dotenv import load_dotenv
 import asyncio
 import os
+from datetime import timedelta
 
 load_dotenv()
 DISCORDKEY = os.getenv('CHEF_DISCORD_TOKEN')
@@ -34,6 +35,8 @@ TEMP_EXEC_ROLE_NAME = "temp-exec"
 
 SETUP_CHANNEL_ID = 1476166843021525098
 
+MIN_ACCOUNT_AGE = timedelta(days=30)
+
 PASSWORDS = { 
     "cooking": COOKING_PASS,
     "internal": INTERNAL_PASS,
@@ -56,6 +59,40 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     print(f"{bot.user.name} is ready to cook!")
+
+# kick new members with accounts younger than MIN_ACCOUNT_AGE
+@bot.event
+async def on_member_join(member):
+    if member.bot:
+        return
+
+    account_age = discord.utils.utcnow() - member.created_at
+    if account_age >= MIN_ACCOUNT_AGE:
+        return
+
+    try:
+        await member.send(f"Your account needs to be at least {MIN_ACCOUNT_AGE.days} days old to join " \
+                          f"{member.guild.name}, try again later!")
+    except discord.Forbidden:
+        pass
+
+    try:
+        await member.kick(reason=f"Account younger than {MIN_ACCOUNT_AGE.days} days")
+        await notify_owner(f"Kicked {member} from {member.guild.name} (account age: {account_age.days} days)")
+    except discord.Forbidden:
+        logging.error(f"Missing permission to kick {member} (account age: {account_age.days} days)")
+        await notify_owner(f"Failed to kick {member} from {member.guild.name}: missing Kick Members permission")
+    except Exception as e:
+        logging.error(f"Error kicking {member}: {e}", exc_info=True)
+        await notify_owner(f"Failed to kick {member} from {member.guild.name}: {e}")
+
+# dm the bot owner
+async def notify_owner(content):
+    try:
+        app_info = await bot.application_info()
+        await app_info.owner.send(content)
+    except Exception as e:
+        logging.error(f"Error notifying owner: {e}", exc_info=True)
 
 # catch errors
 @bot.event
